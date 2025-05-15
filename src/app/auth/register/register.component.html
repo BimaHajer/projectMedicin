@@ -1,0 +1,101 @@
+<div class="max-w-3xl mx-auto p-4">
+  <div class="border-sky-100 shadow-lg rounded-lg p-6">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-semibold text-sky-700">Créer un compte</h2>
+      <p class="text-gray-500">Remplissez les informations ci-dessous</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div *ngIf="error" class="bg-red-50 text-red-600 p-3 rounded text-sm">
+        {{ error }}
+      </div>
+
+      <!-- Role Selection -->
+      <div class="flex gap-4 justify-center mb-6">
+        <label class="inline-flex items-center">
+          <input type="radio" formControlName="role" value="ROLE_MEDECIN" class="form-radio text-sky-600">
+          <span class="ml-2">Médecin</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input type="radio" formControlName="role" value="ROLE_LABORANT" class="form-radio text-sky-600">
+          <span class="ml-2">Laborantin</span>
+        </label>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Prénom</label>
+          <input type="text" formControlName="firstName" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Nom</label>
+          <input type="text" formControlName="lastName" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input type="email" formControlName="email" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Mot de passe</label>
+          <input type="password" formControlName="password" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Téléphone</label>
+          <input type="tel" formControlName="phone" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Date de naissance</label>
+          <input type="date" formControlName="birthdate" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Adresse</label>
+          <input type="text" formControlName="address" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+      </div>
+
+      <!-- Medecin Fields -->
+      <div *ngIf="isMedecin" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Spécialité</label>
+          <input type="text" formControlName="speciality" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Numéro d'identification</label>
+          <input type="text" formControlName="medicalId" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Années d'expérience</label>
+          <input type="number" formControlName="yearsOfExperience" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Coordonnées GPS</label>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" formControlName="latitude" placeholder="Latitude" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+            <input type="text" formControlName="longitude" placeholder="Longitude" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Description</label>
+          <textarea formControlName="description" rows="3" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500"></textarea>
+        </div>
+      </div>
+
+      <!-- Laborant Fields -->
+      <div *ngIf="!isMedecin" class="grid grid-cols-1 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">ID du laboratoire</label>
+          <input type="number" formControlName="laboratoryId" class="w-full p-2 border rounded focus:ring-sky-500 focus:border-sky-500">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4">
+        <a routerLink="/auth/login" class="text-sky-600 hover:text-sky-800">Déjà inscrit ?</a>
+        <button type="submit" [disabled]="registerForm.invalid || isLoading" 
+                class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded disabled:opacity-50">
+          {{ isLoading ? 'Inscription...' : 'S\'inscrire' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

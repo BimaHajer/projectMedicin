@@ -1,0 +1,114 @@
+<main class="min-h-screen p-8 bg-gradient-to-b from-sky-50 to-white">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center mb-6">
+    <a routerLink="/rendez-vous" class="mr-4">
+      <button class="p-2 hover:bg-sky-50 rounded-full">
+        <i class="fas fa-arrow-left h-5 w-5"></i>
+      </button>
+    </a>
+    <h1 class="text-2xl font-bold text-sky-700">Chargement...</h1>
+  </div>
+
+  <!-- Not Found State -->
+  <div *ngIf="!loading && !booking" class="bg-white rounded-lg shadow-lg p-6">
+    <h1 class="text-xl font-semibold mb-4">Rendez-vous non trouvé</h1>
+    <p class="text-gray-600 mb-4">Le rendez-vous demandé n'existe pas ou a été supprimé.</p>
+    <button (click)=" routing()" 
+            class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700">
+      Retour à la liste
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <ng-container *ngIf="!loading && booking">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center">
+        <a routerLink="/rendez-vous" class="mr-4">
+          <button class="p-2 hover:bg-sky-50 rounded-full">
+            <i class="fas fa-arrow-left h-5 w-5"></i>
+          </button>
+        </a>
+        <div>
+          <h1 class="text-2xl font-bold text-sky-700">Détails du Rendez-vous</h1>
+          <p class="text-gray-600">
+            {{formatDate(booking.start)}} • {{formatTime(booking.start)}} - {{formatTime(booking.end)}}
+          </p>
+        </div>
+      </div>
+      <span [class]="getStatusClass(booking.status)" class="px-3 py-1 rounded-full text-sm">
+        {{translateStatus(booking.status)}}
+      </span>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="actionSuccess" 
+         class="mb-6 bg-green-50 border border-green-200 text-green-600 p-4 rounded-md">
+      {{actionMessage}}
+    </div>
+
+    <!-- Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- General Info -->
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-4">Informations générales</h2>
+        <div class="space-y-4">
+          <!-- Date & Time -->
+          <div class="flex items-center">
+            <i class="fas fa-calendar mr-3 text-gray-400"></i>
+            <div>
+              <p class="text-sm text-gray-600">Date</p>
+              <p>{{formatDate(booking.start)}}</p>
+            </div>
+          </div>
+          <!-- Add other info fields -->
+        </div>
+      </div>
+
+      <!-- Participants -->
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-lg font-semibold mb-4">Participants</h2>
+        <div class="space-y-4">
+          <!-- Patient -->
+          <div class="flex items-start">
+            <i class="fas fa-user mr-3 text-gray-400"></i>
+            <div>
+              <p class="text-sm text-gray-600">Patient</p>
+              <p>{{booking.patient.name}}</p>
+            </div>
+          </div>
+          <!-- Add doctor/laboratory info -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Card -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Actions</h2>
+      <div class="flex flex-wrap gap-4">
+        <ng-container [ngSwitch]="booking.status">
+          <ng-container *ngSwitchCase="'PENDING'">
+            <button (click)="handleAction('confirm')"
+                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+              <i class="fas fa-check mr-2"></i>
+              Confirmer
+            </button>
+            <button (click)="handleAction('refuse')"
+                    class="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50">
+              <i class="fas fa-times mr-2"></i>
+              Refuser
+            </button>
+          </ng-container>
+          <!-- Add other status cases -->
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div *ngIf="showActionDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+        <!-- Dialog content -->
+      </div>
+    </div>
+  </ng-container>
+</main>

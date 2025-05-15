@@ -1,0 +1,79 @@
+<main class="min-h-screen p-8 bg-gradient-to-b from-sky-50 to-white">
+  <!-- Header -->
+  <div class="flex items-center mb-6">
+    <a routerLink="/patients" class="mr-4">
+      <button class="p-2 hover:bg-sky-50 rounded-full">
+        <i class="fas fa-arrow-left h-5 w-5"></i>
+      </button>
+    </a>
+    <h1 class="text-2xl font-bold text-sky-700">Ajouter un Patient</h1>
+  </div>
+
+  <!-- Success Alert -->
+  <div *ngIf="success" class="mb-6 bg-green-50 border-green-200 text-green-600 p-4 rounded">
+    Patient créé avec succès! Redirection en cours...
+  </div>
+
+  <!-- Form with Tabs -->
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Tab Navigation -->
+    <div class="bg-white rounded-lg shadow-lg">
+      <nav class="flex border-b">
+        <button type="button" (click)="activeTab = 'personal'"
+                [class.border-sky-500]="activeTab === 'personal'"
+                class="flex-1 py-4 px-6 text-center border-b-2">
+          Informations Personnelles
+        </button>
+        <button type="button" (click)="activeTab = 'medical'"
+                [class.border-sky-500]="activeTab === 'medical'"
+                class="flex-1 py-4 px-6 text-center border-b-2">
+          Informations Médicales
+        </button>
+      </nav>
+
+      <!-- Personal Info Tab -->
+      <div *ngIf="activeTab === 'personal'" class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Name Fields -->
+          <div class="form-group">
+            <label class="block text-sm font-medium mb-1">Prénom</label>
+            <input formControlName="firstName"
+                   class="w-full p-2 border rounded-md"
+                   placeholder="Prénom">
+          </div>
+          <!-- Add other personal fields -->
+        </div>
+      </div>
+
+      <!-- Medical Info Tab -->
+      <div *ngIf="activeTab === 'medical'" class="p-6">
+        <div class="space-y-4">
+          <!-- Blood Type -->
+          <div class="form-group">
+            <label class="block text-sm font-medium mb-1">Groupe sanguin</label>
+            <select formControlName="bloodType" class="w-full p-2 border rounded-md">
+              <option value="">Sélectionner un groupe sanguin</option>
+              <option *ngFor="let type of bloodTypes" [value]="type">{{type}}</option>
+            </select>
+          </div>
+          <!-- Add other medical fields -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end gap-4">
+      <a routerLink="/patients">
+        <button type="button" class="px-4 py-2 border rounded-md hover:bg-gray-50">
+          Annuler
+        </button>
+      </a>
+      <button type="submit"
+              [disabled]="patientForm.invalid || loading"
+              class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 disabled:opacity-50">
+        <i class="fas fa-save mr-2"></i>
+        {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</main>

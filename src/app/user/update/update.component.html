@@ -1,0 +1,194 @@
+<main class="min-h-screen p-8 bg-gradient-to-b from-sky-50 to-white">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header with Back Button -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center">
+        <a routerLink="/user/list" class="mr-4">
+          <button class="p-2 hover:bg-sky-50 rounded-full transition duration-150">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+        </a>
+        <h1 class="text-2xl font-bold text-sky-700">Modifier l'Utilisateur</h1>
+      </div>
+      <button type="submit" form="userForm" [disabled]="userForm.invalid || loading"
+        class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-md flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+        <svg *ngIf="!loading" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
+        <svg *ngIf="loading" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>{{ loading ? 'Enregistrement...' : 'Enregistrer' }}</span>
+      </button>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="success" class="mb-6 bg-green-50 border border-green-200 text-green-600 p-4 rounded-md flex items-center">
+      <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+      <span>Utilisateur modifié avec succès! Redirection en cours...</span>
+    </div>
+
+    <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 text-red-600 p-4 rounded">
+      {{ error }}
+    </div>
+
+    <form id="userForm" [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Tabs -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="border-b border-gray-200">
+          <nav class="flex -mb-px">
+            <button type="button" (click)="activeTab = 'info'"
+              [class.border-sky-500]="activeTab === 'info'"
+              [class.text-sky-600]="activeTab === 'info'"
+              class="w-1/2 py-4 px-6 text-center border-b-2 font-medium text-sm focus:outline-none transition duration-150">
+              Informations Personnelles
+            </button>
+            <button type="button" (click)="activeTab = 'professional'"
+              [class.border-sky-500]="activeTab === 'professional'"
+              [class.text-sky-600]="activeTab === 'professional'"
+              class="w-1/2 py-4 px-6 text-center border-b-2 font-medium text-sm focus:outline-none transition duration-150">
+              Informations Professionnelles
+            </button>
+          </nav>
+        </div>
+
+        <!-- Personal Information Tab -->
+        <div *ngIf="activeTab === 'info'" class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Email -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input 
+                type="email" 
+                formControlName="email"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                [ngClass]="{'border-red-500': userForm.get('email')?.invalid && userForm.get('email')?.touched}"
+              >
+              <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-red-500 text-xs mt-1">
+                <span *ngIf="userForm.get('email')?.errors?.['required']">Email est requis</span>
+                <span *ngIf="userForm.get('email')?.errors?.['email']">Email invalide</span>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+              <input 
+                type="password" 
+                formControlName="password"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                [ngClass]="{'border-red-500': userForm.get('password')?.invalid && userForm.get('password')?.touched}"
+              >
+              <div *ngIf="userForm.get('password')?.touched" class="text-xs mt-1">
+                <div *ngIf="userForm.get('password')?.errors?.['passwordStrength']" class="text-red-500">
+                  Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial
+                </div>
+              </div>
+            </div>
+
+            <!-- First Name -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+              <input 
+                type="text" 
+                formControlName="firstName"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                [ngClass]="{'border-red-500': userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched}"
+              >
+              <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="text-red-500 text-xs mt-1">
+                <span *ngIf="userForm.get('firstName')?.errors?.['required']">Prénom est requis</span>
+                <span *ngIf="userForm.get('firstName')?.errors?.['minlength']">Minimum 2 caractères</span>
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <input 
+                type="text" 
+                formControlName="lastName"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                [ngClass]="{'border-red-500': userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched}"
+              >
+              <div *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" class="text-red-500 text-xs mt-1">
+                <span *ngIf="userForm.get('lastName')?.errors?.['required']">Nom est requis</span>
+                <span *ngIf="userForm.get('lastName')?.errors?.['minlength']">Minimum 2 caractères</span>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+              <input 
+                type="tel" 
+                formControlName="phone"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                [ngClass]="{'border-red-500': userForm.get('phone')?.invalid && userForm.get('phone')?.touched}"
+              >
+              <div *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched" class="text-red-500 text-xs mt-1">
+                <span *ngIf="userForm.get('phone')?.errors?.['required']">Téléphone est requis</span>
+                <span *ngIf="userForm.get('phone')?.errors?.['minlength']">Minimum 8 caractères</span>
+              </div>
+            </div>
+
+            <!-- Birthdate -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
+              <input 
+                type="date" 
+                formControlName="birthdate"
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+              >
+            </div>
+          </div>
+
+          <!-- Address (Full Width) -->
+          <div class="mt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+            <input 
+              type="text" 
+              formControlName="address"
+              class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+              [ngClass]="{'border-red-500': userForm.get('address')?.invalid && userForm.get('address')?.touched}"
+            >
+            <div *ngIf="userForm.get('address')?.invalid && userForm.get('address')?.touched" class="text-red-500 text-xs mt-1">
+              <span *ngIf="userForm.get('address')?.errors?.['required']">Adresse est requise</span>
+              <span *ngIf="userForm.get('address')?.errors?.['minlength']">Minimum 5 caractères</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Information Tab -->
+        <div *ngIf="activeTab === 'professional'" class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Role Selection -->
+            <div class="form-group md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+              <select formControlName="role" 
+                class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500 bg-white">
+                <option value="">Sélectionner un rôle</option>
+                <option value="ROLE_ADMIN">Administrateur</option>
+                <option value="ROLE_MEDECIN">Médecin</option>
+                <option value="ROLE_LABORANT">Laborantin</option>
+              </select>
+              <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" 
+                class="text-red-500 text-xs mt-1">
+                Rôle est requis
+              </div>
+            </div>
+
+            <!-- Conditional Fields for ROLE_MEDECIN -->
+            <ng-container *ngIf="userForm.get('role')?.value === 'ROLE_MEDECIN'">
+              <!-- ...add medical specific fields here... -->
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>

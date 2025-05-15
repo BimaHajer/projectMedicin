@@ -1,0 +1,129 @@
+<main class="min-h-screen p-8 bg-gradient-to-b from-sky-50 to-white">
+  <!-- Loading State -->
+  <div *ngIf="initialLoading" class="flex items-center mb-6">
+    <a routerLink="/laboratory/list" class="mr-4">
+      <button class="p-2 hover:bg-sky-50 rounded-full transition duration-150">
+        <i class="fas fa-arrow-left text-sky-600"></i>
+      </button>
+    </a>
+    <h1 class="text-2xl font-bold text-sky-700">Chargement...</h1>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!initialLoading">
+    <div class="flex items-center mb-6">
+      <a routerLink="/laboratory/list" class="mr-4">
+        <button class="p-2 hover:bg-sky-50 rounded-full">
+          <i class="fas fa-arrow-left text-sky-600"></i>
+        </button>
+      </a>
+      <h1 class="text-2xl font-bold text-sky-700">Modifier le Laboratoire</h1>
+    </div>
+
+    <div *ngIf="success" class="mb-6 bg-green-50 border border-green-200 text-green-600 p-4 rounded-md">
+      Laboratoire modifié avec succès! Redirection en cours...
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold mb-2">Informations du laboratoire</h2>
+        <p class="text-gray-500 mb-6">Modifiez les détails du laboratoire</p>
+
+        <form [formGroup]="laboratoryForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <!-- Name Field -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nom du laboratoire</label>
+            <input formControlName="name"
+                   type="text"
+                   placeholder="Ex: Laboratoire Central"
+                   class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                   [ngClass]="{'border-red-500': laboratoryForm.get('name')?.invalid && laboratoryForm.get('name')?.touched}">
+            <div *ngIf="laboratoryForm.get('name')?.invalid && laboratoryForm.get('name')?.touched"
+                 class="text-red-500 text-xs mt-1">
+              Le nom doit contenir au moins 2 caractères
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Phone -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+              <input formControlName="phone"
+                     type="tel"
+                     placeholder="Ex: +21650123456"
+                     class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                     [ngClass]="{'border-red-500': laboratoryForm.get('phone')?.invalid && laboratoryForm.get('phone')?.touched}">
+              <div *ngIf="laboratoryForm.get('phone')?.invalid && laboratoryForm.get('phone')?.touched"
+                   class="text-red-500 text-xs mt-1">
+                Numéro de téléphone invalide
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+              <input formControlName="address"
+                     type="text"
+                     placeholder="Ex: 15 Rue de Marseille, Tunis"
+                     class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500"
+                     [ngClass]="{'border-red-500': laboratoryForm.get('address')?.invalid && laboratoryForm.get('address')?.touched}">
+              <div *ngIf="laboratoryForm.get('address')?.invalid && laboratoryForm.get('address')?.touched"
+                   class="text-red-500 text-xs mt-1">
+                L'adresse doit contenir au moins 5 caractères
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea formControlName="description"
+                      placeholder="Description des services et spécialités du laboratoire"
+                      class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500 min-h-[100px]">
+            </textarea>
+            <p class="text-xs text-gray-500 mt-1">Optionnel</p>
+          </div>
+
+          <!-- Coordinates -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Latitude -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+              <input formControlName="latitude"
+                     type="text"
+                     placeholder="Ex: 36.8008"
+                     class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500">
+              <p class="text-xs text-gray-500 mt-1">Optionnel</p>
+            </div>
+
+            <!-- Longitude -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+              <input formControlName="longitude"
+                     type="text"
+                     placeholder="Ex: 10.18"
+                     class="w-full p-2 border rounded-md focus:ring-sky-500 focus:border-sky-500">
+              <p class="text-xs text-gray-500 mt-1">Optionnel</p>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-end gap-4">
+            <a routerLink="/laboratory/list">
+              <button type="button" class="px-4 py-2 border rounded-md hover:bg-gray-50">
+                Annuler
+              </button>
+            </a>
+            <button type="submit"
+                    [disabled]="laboratoryForm.invalid || isLoading"
+                    class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 disabled:opacity-50 flex items-center">
+              <i *ngIf="!isLoading" class="fas fa-save mr-2"></i>
+              {{ isLoading ? 'Enregistrement...' : 'Enregistrer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
