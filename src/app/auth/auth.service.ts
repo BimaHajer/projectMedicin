@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, RegisterRequest } from './models/auth.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -59,4 +60,14 @@ export class AuthService {
     }
     return "";
   }
+}
+export function tokenGetter(platformId: object): string {
+  if (!isPlatformBrowser(platformId)) {
+    console.warn("tokenGetter: Running in a non-browser environment.");
+    return "";
+  }
+  const cookies = document.cookie.split(";").map(c => c.trim());
+  const tokenCookie = cookies.find(c => c.startsWith("token="));
+
+  return tokenCookie ? tokenCookie.split("=")[1] : "";
 }
